@@ -141,7 +141,26 @@ FROM
 WHERE   menu_id = 'MENU01'
 ORDER BY    idx DESC;
 
-
+-------------------------------------------------------------------------
+-- FILES table 생성
+CREATE TABLE FILES
+(
+    FILE_NUM    NUMBER(6,0) NOT NULL    --파일고유번호
+    , IDX       NUMBER(6,0) NOT NULL        --게시글번호 : BOARD TABLE
+    , FILENAME  VARCHAR2(255) NOT NULL  --파일이름
+    , FILEEXT   VARCHAR2(255) NOT NULL  --파일확장자
+    , SFILENAME VARCHAR2(255) NOT NULL  --저장된실제파일명
+    
+    , CONSTRAINTS FILES_PK PRIMARY KEY  --기본키(복합키)
+    (
+        FILE_NUM,
+        IDX
+    )
+    , CONSTRAINTS FK_BOARD_FILES_IDX
+    FOREIGN KEY (IDX)               --현재테이블의 칼럼명
+    REFERENCES  BOARD(IDX)
+    ON DELETE   CASCADE
+);
 
 
 
