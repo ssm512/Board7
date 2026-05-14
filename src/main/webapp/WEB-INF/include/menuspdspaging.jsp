@@ -8,7 +8,7 @@
 			<c:forEach var="menu" items="${ menuList }">
 				<td>
 					<!-- () ? 'A' : 'B' - 조건 연산자(if문 표현) -->
-					<a href="/Pds/List?menu_id=${menu.menu_id}&nowpage=${nowpage}" class="${menu.menu_id eq map.menu_id ? 'active' : ''}">
+					<a href="/Pds/List?menu_id=${menu.menu_id}&nowpage=1" class="${menu.menu_id eq map.menu_id ? 'active' : ''}">
 					${menu.menu_name}
 					</a>
 				</td>
