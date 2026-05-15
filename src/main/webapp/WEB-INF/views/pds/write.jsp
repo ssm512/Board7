@@ -38,11 +38,12 @@
 	input[name=userid] {
 	width : 79%;
 	}
-	
+	#btnAddFile {
+		width : 150px;
+	}
 	textarea {
 		width : 100%;
-		height : 300px;
-		
+		height : 300px;		
 	}
 </style>
 </head>
@@ -71,11 +72,9 @@
 				</tr>
 				<tr>
 					<td>파일</td>
-					<td>
+					<td id="tdfile">
 						<input type="button" id="btnAddFile" value="파일추가(최대100MByte)"/>
-						<div id="tdfile">
 						<input type="file" name="upfile" class="upfile" multiple/><br>
-						</div>
 					</td>
 				</tr>
 				<tr>
@@ -106,11 +105,30 @@
 		const tdfileEl 			= document.querySelector('#tdfile')
 		let tag							=	'<input type="file" name="upfile" class="upfile" multiple/><br>'
 		let html						= tdfileEl.innerHTML	
-		btnAddFileEl.addEventListener('click', function () {
+		// js에서 실행할때 새로 추가된 버튼은 이벤트가 한번만 작동한다
+		// 해결책은 이벤트를 부모 element에 설정한다
+/* 		btnAddFileEl.addEventListener('click', function () {
 			html							 +=	tag
-			alert(html)
-			tdfileEl.innerHTML = html
-		})
+			tdfileEl.innerHTML = html 
+			})
+			*/ // 주석줄 사용하려면 위의 html을 아래처럼 변경해야됨
+			
+			/*
+			<td>
+				<input type="button" id="btnAddFile" value="파일추가(최대100MByte)"/>
+				<div id="tdfile">
+				<input type="file" name="upfile" class="upfile" multiple/><br>
+				</div>
+			</td>
+			*/
+			
+			tdfileEl.addEventListener('click', function (e) {
+				console.log(e.target) // btnAddFile, upfile
+				if (e.target == btnAddFile) {
+					html							 +=	tag
+					tdfileEl.innerHTML = html
+				}
+			})
 		
 		// 입력항목 체크
 		

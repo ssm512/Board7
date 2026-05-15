@@ -47,13 +47,16 @@ public class PdsController {
 		// 전체 메뉴 목록 조회
 		List<MenuDTO> menuList	=	menuMapper.getMenuList();
 		
-		// 자료실 목록 조회 (10개씩)
+		// 자료실 목록 조회 (10개씩) - 페이징 처리 준비작업 시작
 		// 해당 메뉴의 전체 자료수
 		int totalCount	=	pdsMapper.count(map); // menu_id, searchType, keyword 전달하여 찾을 예정임
 		//System.out.println("totalCount : " + totalCount);
 		
-		// 페이징을 위한 설정
+		// 현재 페이지 정보 : map {nowpage=1} nowpage가 Object type이라 -> String -> int 형태 변경
+		// 한번에 object type이 int 타입으로 변경되지 않음
 		int		nowpage		=	Integer.parseInt( String.valueOf(map.get("nowpage")) );
+		
+		// 페이징을 위한 설정
 		SearchDTO	searchDTO	=	new	SearchDTO();
 		searchDTO.setPageNo( nowpage ); // 현재 페이지 설정
 		searchDTO.setNumOfRows(10); // 한페이지에 10줄의 자료를 출력
@@ -65,9 +68,9 @@ public class PdsController {
 		
 		int		offset		=	searchDTO.getOffset();
 		int		numOfRows	=	searchDTO.getNumOfRows();
-		
 		map.put("offset", offset);
 		map.put("numOfRows", numOfRows);
+		// 페이징 처리 준비작업 종료
 		
 		System.out.println("map2 : " + map);
 		
@@ -107,9 +110,11 @@ public class PdsController {
 		// 전체 목록 조회
 		List<MenuDTO> menuList = menuMapper.getMenuList();
 		
+		
+		
 		// 념겨줄 값
 		ModelAndView mv	=	new	ModelAndView();
-		mv.setViewName("pds/write");
+		mv.setViewName("redirect:/Pds/List");
 		mv.addObject("menuList", menuList);
 		mv.addObject("map", map);
 		return mv;
