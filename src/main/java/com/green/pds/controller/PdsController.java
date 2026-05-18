@@ -108,7 +108,7 @@ public class PdsController {
 	
 	// /Pds/Write
 	// text : menu_id=MENU01 , nowpage=1, title=asdv, writer=admin, content=alkjzxcvm,e -> map
-	// binary : upfile=(binary), upfile=(binary)
+	// binary : upfile=(binary), upfile=(binary) -> uploadfiles
 	@RequestMapping("/Write")
 	public ModelAndView write ( 
 			@RequestParam HashMap<String, Object> map, 
