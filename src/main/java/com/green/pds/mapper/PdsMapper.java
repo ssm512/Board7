@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.green.pds.dto.FilesDTO;
 import com.green.pds.dto.PdsDTO;
 
 @Mapper
@@ -17,5 +18,13 @@ public interface PdsMapper {
 	void setWrite(HashMap<String, Object> map);
 
 	void setFileWriter(HashMap<String, Object> map);
+
+	void setReadCountUpdate(HashMap<String, Object> map);
+
+	PdsDTO getPds(HashMap<String, Object> map);
+
+	List<FilesDTO> getFileList(HashMap<String, Object> map);
+
+	FilesDTO getFileInfo(Long file_num);
 
 }

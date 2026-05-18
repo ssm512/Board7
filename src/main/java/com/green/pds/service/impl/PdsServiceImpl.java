@@ -66,4 +66,32 @@ public class PdsServiceImpl implements PdsService { // 인터페이스 implement
 			pdsMapper.setFileWriter(map);
 	}
 
+	// map(idx)에 해당하는 글 조회수 증가
+	@Override
+	public void setReadCountUpdate(HashMap<String, Object> map) {
+		pdsMapper.setReadCountUpdate(map);
+		
+	}
+
+	// 자료실 게시글(pds)을 조회한다. : map(idx)
+	@Override
+	public PdsDTO getPds(HashMap<String, Object> map) {
+		PdsDTO pdsDTO = pdsMapper.getPds(map);
+		return pdsDTO;
+	}
+
+	// idx에 해당하는 Files table의 정보
+	@Override
+	public List<FilesDTO> getFileList(HashMap<String, Object> map) {
+		List<FilesDTO> fileList = pdsMapper.getFileList(map);
+		return fileList;
+	}
+
+	// file_num로 조회할 파일 정보를 조회
+	@Override
+	public FilesDTO getFileInfo(Long file_num) {
+		FilesDTO fileInfo = pdsMapper.getFileInfo(file_num);
+		return fileInfo;
+	}
+
 }
