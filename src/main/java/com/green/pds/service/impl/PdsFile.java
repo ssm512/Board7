@@ -113,4 +113,20 @@ public class PdsFile {
 		return folderPath;
 	}
 
+	// 실제 파일 삭제 : fileList에 있는 여러 파일 삭제
+	// new 없이 쓰기 위해 static 이 붙음
+	public static void delete(String uploadPath, List<FilesDTO> fileList) {
+		
+		String path = uploadPath;
+		
+		fileList.forEach((file) -> { // 람다식임
+			String	sfile	=	file.getSfilename(); // data 폴더에 실제 저장된 파일명
+			
+			File	dfile 	=	new File(path + sfile); // 실제 파일의 경로
+			if(dfile.exists())
+				dfile.delete();
+		});
+		
+	}
+
 }

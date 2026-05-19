@@ -10,11 +10,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -181,13 +183,34 @@ public class PdsController {
 		return mv;
 	}
 	
+	// /Pds/Delete?idx=1416&menu_id=MENU02&nowpage=1
+	@RequestMapping("/Delete")
+	public ModelAndView delete (@RequestParam HashMap<String, Object> map) { // HashMap이 아닌 Map을 쓴 이유는 어짜피 HashMap은 Map의 자식, HashMap으로 바꿈 Impl에서 오류떠서
+		System.out.println("delete map : " + map);
+		
+		// db에서 자료 삭제를 해야됨
+		pdsService.setDelete(map);
+		
+		// 삭제 이후에 목록으로 돌아갈 주소 및 넘길 값
+		// loc를 한 것은 map.get으로 꺼내오면 object type이라 형 변환을 해줘야 하는데 
+		// 아래의 형식으로 하면 자동 형 변환됨
+		ModelAndView mv	=	new	ModelAndView();
+		String		loc		=	"redirect:/Pds/List"
+								+"?menu_id="	+ map.get("menu_id")
+								+"&nowpage="	+ map.get("nowpage");
+		mv.setViewName(loc);
+		mv.addObject("map", map);
+		return mv;
+	}
+	
 	// ----------------------------------------------------------
 	// 파일 다운로드
 	// 서버에서 바이너리데이터를 다운받는다 : data 덩어리
 	// ----------------------------------------------------------
 	// /Pds/filedownload/1
 	// path variable
-	@RequestMapping("/filedownload/{file_num}")
+	// parastring, querystring
+	@GetMapping("/filedownload/{file_num}")		// ?file_num=1 : querystring
 	@ResponseBody // 내려주는 것은 data 이다
 	public void downloadFile(
 			HttpServletResponse res, 
@@ -207,6 +230,21 @@ public class PdsController {
 		
 		// 파일 복사 -> 함수 (서버 -> 클라이언트) : 실제 다운로드
 		fileCopy(res, saveFilePath );
+	}
+	
+	// Content-Disposition=attachment; filename=\"tcpview.zip\""
+	// 다운로드 받을 파일의 header 정보를 설정
+	private void setFileHeader(HttpServletResponse response, FilesDTO fileInfo) throws UnsupportedEncodingException {
+		
+		response.setHeader("Content-Disposition",
+				"attachment; filename=\"" +
+				URLEncoder.encode( (String) fileInfo.getFilename(), "UTF-8" ) + "\";");
+		response.setHeader("Content-Transfer-Encoding", "binary");
+		//response.setHeader("Content-Type", "application/download; utf-8"); // hwp 연결 프로그램
+		response.setHeader("Content-Type", "application/octet-stream; utf-8"); // 무조건 다운로드
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Expires", "-1");
+		
 	}
 	
 	// 실제 파일 다운로드 부분 : binary 데이터를 다운로드
@@ -231,24 +269,8 @@ public class PdsController {
 				e.printStackTrace();
 			}
 		}
-		
-		
+			
 	} // fileCopy () end 
-	
-	// Content-Disposition=attachment; filename=\"tcpview.zip\""
-	// 다운로드 받을 파일의 header 정보를 설정
-	private void setFileHeader(HttpServletResponse response, FilesDTO fileInfo) throws UnsupportedEncodingException {
 		
-		response.setHeader("Content-Disposition",
-				"attachment; filename=\"" +
-				URLEncoder.encode( (String) fileInfo.getFilename(), "UTF-8" ) + "\";");
-		response.setHeader("Content-Transfer-Encoding", "bianry");
-		//response.setHeader("Content-Type", "application/download; utf-8"); // hwp 연결 프로그램
-		response.setHeader("Content-Type", "application/oectet-stream; utf-8"); // 무조건 다운로드
-		response.setHeader("Pragma", "no-cache");
-		response.setHeader("Expires", "-1");
-		
-	}
-	
-	
+
 }
