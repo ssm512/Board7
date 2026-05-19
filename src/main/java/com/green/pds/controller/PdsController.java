@@ -203,6 +203,53 @@ public class PdsController {
 		return mv;
 	}
 	
+	// /Pds/UpdateForm?idx=1415&menu_id=MENU01&nowpage=1
+	@RequestMapping("/UpdateForm")
+	public ModelAndView updateForm (@RequestParam HashMap<String, Object> map) {
+		
+		// 전체 메뉴 목록 조회
+		List<MenuDTO> menuList = menuMapper.getMenuList();
+		
+		// 수정할 Board 정보 idx로 검색
+		PdsDTO	pds	=	pdsService.getPds(map);
+		
+		// 수정할 Files 정보 idx로 검색
+		List<FilesDTO> fileList	=	pdsService.getFileList(map);
+		
+		ModelAndView mv	=	new	ModelAndView();
+		mv.setViewName("/pds/update");
+		mv.addObject("map", map);
+		mv.addObject("pds", pds);
+		mv.addObject("fileList", fileList);
+		mv.addObject("menuList", menuList);
+		return mv;
+	}
+	
+	// /Pds/Update
+	// map {menu_id=MENU01, nowpage=1, idx=1415, title=자바 새글 등록 02 수정,
+	// content=asdf	asdflk 	수정} 
+	// MultipartFile { upfile=(binary), upfile=(binary) }
+	@RequestMapping("/Update")
+	public ModelAndView update (@RequestParam HashMap<String, Object> map, 
+								@RequestParam(value="upfile") MultipartFile [] uploadfiles ) {
+		// 전체 목록 조회
+		List<MenuDTO> menuList = menuMapper.getMenuList();
+		
+		// 필요한 정보 수정
+		pdsService.setUpdate(map, uploadfiles);
+		
+		// 돌아갈 주소 및 넘겨주는 값
+		ModelAndView mv = new ModelAndView();
+		String loc		=	"redirect:/Pds/List" 
+							+ "?menu_id=" + map.get("menu_id")
+							+ "&nowpage=" + map.get("nowpage");
+		mv.setViewName(loc);
+		mv.addObject("menuList", menuList);
+		return mv;
+		
+	}
+	
+	
 	// ----------------------------------------------------------
 	// 파일 다운로드
 	// 서버에서 바이너리데이터를 다운받는다 : data 덩어리
