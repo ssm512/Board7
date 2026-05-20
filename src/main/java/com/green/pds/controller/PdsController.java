@@ -1,5 +1,6 @@
 package com.green.pds.controller;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -167,8 +167,15 @@ public class PdsController {
 		// 조회수 증가
 		pdsService.setReadCountUpdate( map ); // map : idx, incHit
 		
+		
 		// 넘겨줄 pdsDTO정보를 조회 idx
 		PdsDTO pdsDTO = pdsService.getPds(map);
+		
+		// 내용보기 줄바꿈 변경 \n -> <br>
+		if(pdsDTO.getContent() != null) {
+			String content = pdsDTO.getContent().replace("\n", "<br>");
+			pdsDTO.setContent(content);
+		}
 		
 		// 넘겨줄 filesDTO정보를 조회 idx
 		List<FilesDTO> fileList = pdsService.getFileList(map);
@@ -318,6 +325,6 @@ public class PdsController {
 		}
 			
 	} // fileCopy () end 
-		
+	
 
 }

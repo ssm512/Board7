@@ -87,7 +87,7 @@
 							<div class="text-start">
 								<a	class="aDelete" 
 										style="text-decoration : none;"
-										href="/deleteFile?file_num=${ file.file_num }">❌	</a>
+										href="/deleteFile/${ file.file_num }">❌	</a>
 								<a href="/Pds/filedownload/${ file.file_num }">
 								${ file.filename }
 								</a>
@@ -95,8 +95,10 @@
 						</c:forEach>
 						<hr/>
 						<!-- 새 파일 추가 -->
-						<input type="button" id="btnAddFile" value="파일추가(최대100MByte)"/><br>
-						<input type="file" name="upfile" class="upfile" multiple/><br>
+						<div id="addNewFile">
+							<input type="button" id="btnAddFile" value="파일추가(최대100MByte)"/><br>
+							<input type="file" name="upfile" class="upfile" multiple/><br>
+						</div>
 					</td>
 				</tr>
 				<tr>
@@ -125,8 +127,9 @@
 		// 파일 입력창 추가 - onclick 주는 위치에 따라 결과값이 달라짐 추후에 이야기 할거임
 		const btnAddFileEl 	= document.querySelector('#btnAddFile')
 		const tdfileEl 			= document.querySelector('#tdfile')
+		const addNewFileEl 			= document.querySelector('#addNewFile')
 		let tag							=	'<input type="file" name="upfile" class="upfile" multiple/><br>'
-		let html						= tdfileEl.innerHTML	
+		let html						= addNewFileEl.innerHTML	
 		// js에서 실행할때 새로 추가된 버튼은 이벤트가 한번만 작동한다
 		// 해결책은 이벤트를 부모 element에 설정한다
 /* 		btnAddFileEl.addEventListener('click', function () {
@@ -148,11 +151,41 @@
 				console.log(e.target) // btnAddFile, upfile
 				if (e.target == btnAddFile) {
 					html							 +=	tag
-					tdfileEl.innerHTML = html
+					addNewFileEl.innerHTML = html
 				}
 			})
 		
-		// 입력항목 체크
+		// 입력항목 체크 : title은 필수 입력
+		
+		// X 를 클릭하면
+		const aDeleteEls	=	document.querySelectorAll('.aDelete')
+		aDeleteEls.forEach(function (aDeleteEl, index) {
+			aDeleteEl.addEventListener('click', function (e) {
+				//console.log(e)
+				//alert('click')
+				const aEl = e.target
+				console.dir(aEl)
+				//const parentDiv = document.querySelector('div:has(".aDelete")') // 클릭된 aDelementEl의 부모 element 삭제 방법2 중 부모element 찾는 방법
+				let loc		=	aEl.href // "http://localhost:8080/deleteFile/6"
+				// 비동기호출 서버명령을 실행 돌아온다
+				fetch(loc)
+				  .then((response) => response.json())
+				  .then((json) => {
+					  console.log(json)
+					  //alert(json.status)
+					  aEl.parentElement.remove(); // 클릭된 aDelementEl의 부모 element 삭제 방법1
+					})
+					.catch((error) => {
+						console.dir(error)
+						alert(error)
+					})
+								
+				// 이동금지
+				e.preventDefault();
+				e.stopPropagation();
+			})
+			
+		})
 		
 	</script>
 	<!-- javascript validation -->
